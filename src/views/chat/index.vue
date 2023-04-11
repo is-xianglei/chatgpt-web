@@ -3,7 +3,7 @@ import type { Ref } from 'vue'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
-import { NAutoComplete, NButton, NInput, useDialog, useMessage } from 'naive-ui'
+import { NAutoComplete, NButton, NInput, NCard, useDialog, useMessage } from 'naive-ui'
 import html2canvas from 'html2canvas'
 import { Message } from './components'
 import { useScroll } from './hooks/useScroll'
@@ -16,6 +16,7 @@ import { useBasicLayout } from '@/hooks/useBasicLayout'
 import { useChatStore, usePromptStore } from '@/store'
 import { fetchChatAPIProcess } from '@/api'
 import { t } from '@/locales'
+import defaultWechat from '@/assets/wechat.jpg'
 
 let controller = new AbortController()
 
@@ -481,45 +482,54 @@ onUnmounted(() => {
       @export="handleExport"
       @toggle-using-context="toggleUsingContext"
     />
-    <main class="flex-1 overflow-hidden">
-      <div id="scrollRef" ref="scrollRef" class="h-full overflow-hidden overflow-y-auto">
-        <div
-          id="image-wrapper"
-          class="w-full max-w-screen-xl m-auto dark:bg-[#101014]"
-          :class="[isMobile ? 'p-2' : 'p-4']"
-        >
-          <template v-if="!dataSources.length">
-            <div class="flex items-center justify-center mt-4 text-center text-neutral-300">
-              <SvgIcon icon="ri:bubble-chart-fill" class="mr-2 text-3xl" />
-              <span>Aha~</span>
-            </div>
-          </template>
-          <template v-else>
-            <div>
-              <Message
-                v-for="(item, index) of dataSources"
-                :key="index"
-                :date-time="item.dateTime"
-                :text="item.text"
-                :inversion="item.inversion"
-                :error="item.error"
-                :loading="item.loading"
-                @regenerate="onRegenerate(index)"
-                @delete="handleDelete(index)"
-              />
-              <div class="sticky bottom-0 left-0 flex justify-center">
-                <NButton v-if="loading" type="warning" @click="handleStop">
-                  <template #icon>
-                    <SvgIcon icon="ri:stop-circle-line" />
-                  </template>
-                  Stop Responding
-                </NButton>
-              </div>
-            </div>
-          </template>
-        </div>
-      </div>
-    </main>
+		<main class="flex-1 overflow-hidden">
+			<div style="display: flex;justify-content: center;align-items: center" id="scrollRef" ref="scrollRef" class="h-full overflow-hidden overflow-y-auto">
+				<div
+					id="image-wrapper"
+					class="w-full max-w-screen-xl m-auto dark:bg-[#101014]"
+					:class="[isMobile ? 'p-2' : 'p-4']"
+				>
+					<template v-if="!dataSources.length">
+						<div style="display: flex;justify-content: center;align-items: center">
+							<NCard title="联系方式" hoverable  style="max-width: 300px;">
+								<template #cover>
+									<img :src="defaultWechat">
+								</template>
+								如果你也想搭建同款项目,可扫描二维码加我为好友哦～
+							</NCard>
+							<div class="flex items-center justify-center mt-4 text-center text-neutral-300">
+<!--								<SvgIcon icon="ri:bubble-chart-fill" class="mr-2 text-3xl" />-->
+<!--								<span>Aha~</span>-->
+							</div>
+						</div>
+
+					</template>
+					<template v-else>
+						<div>
+							<Message
+								v-for="(item, index) of dataSources"
+								:key="index"
+								:date-time="item.dateTime"
+								:text="item.text"
+								:inversion="item.inversion"
+								:error="item.error"
+								:loading="item.loading"
+								@regenerate="onRegenerate(index)"
+								@delete="handleDelete(index)"
+							/>
+							<div class="sticky bottom-0 left-0 flex justify-center">
+								<NButton v-if="loading" type="warning" @click="handleStop">
+									<template #icon>
+										<SvgIcon icon="ri:stop-circle-line" />
+									</template>
+									Stop Responding
+								</NButton>
+							</div>
+						</div>
+					</template>
+				</div>
+			</div>
+		</main>
     <footer :class="footerClass">
       <div class="w-full max-w-screen-xl m-auto">
         <div class="flex items-center justify-between space-x-2">

@@ -10,6 +10,11 @@ export function createViteProxy(isOpenProxy: boolean, viteEnv: ImportMetaEnv) {
       changeOrigin: true,
       rewrite: path => path.replace('/api/', '/'),
     },
+		'/chat': {
+			target: viteEnv.VITE_JAVA_API_URL,
+			changeOrigin: true,
+			rewrite: path => path.replace('/chat/', '/'),
+		},
   }
 
   return proxy
